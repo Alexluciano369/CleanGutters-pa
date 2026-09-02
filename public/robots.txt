@@ -1,0 +1,20 @@
+# This landing page is for paid Google Ads traffic only.
+# Organic SEO is focused on cleangutterslighting.com.
+
+# Allow AdsBot to crawl the page for ad quality and landing page experience
+User-agent: AdsBot-Google
+Allow: /
+
+# Allow Googlebot to follow links (page is noindexed via meta tag)
+User-agent: Googlebot
+Allow: /
+
+# Allow Googlebot-Image
+User-agent: Googlebot-Image
+Allow: /
+
+# Block other search engines from indexing
+User-agent: *
+Allow: /
+
+# No sitemap — this is a paid-only landing page
