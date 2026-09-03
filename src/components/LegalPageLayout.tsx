@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Phone, Mail, MapPin, ArrowLeft } from "lucide-react";
+import { trackTelephoneClick } from "@/lib/tracking";
 
 const BUSINESS_PHONE = "(856) 874-6640";
 const BUSINESS_PHONE_TEL = "+18568746640";
@@ -31,6 +32,7 @@ export function LegalPageLayout({
           <div className="flex items-center gap-4">
             <a
               href={`tel:${BUSINESS_PHONE_TEL}`}
+              onClick={trackTelephoneClick}
               className="hidden sm:flex items-center gap-2 text-slate-700 font-semibold hover:text-emerald-700 transition-colors"
             >
               <Phone className="w-4 h-4" />
@@ -85,6 +87,7 @@ export function LegalPageLayout({
               <li>
                 <a
                   href={`tel:${BUSINESS_PHONE_TEL}`}
+                  onClick={trackTelephoneClick}
                   className="flex items-center gap-2 hover:text-emerald-700 transition-colors"
                 >
                   <Phone className="w-4 h-4 text-emerald-600" />
@@ -118,7 +121,7 @@ function LegalFooter() {
         <p>A service of CleanGutters Lighting</p>
         <p className="mt-1">Cherry Hill, NJ 08002</p>
         <p className="mt-1">
-          <a href={`tel:${BUSINESS_PHONE_TEL}`} className="hover:text-emerald-400">
+          <a href={`tel:${BUSINESS_PHONE_TEL}`} onClick={trackTelephoneClick} className="hover:text-emerald-400">
             {BUSINESS_PHONE}
           </a>
           {" · "}
