@@ -42,9 +42,19 @@ export function trackGA4Event(eventName: string, params?: Record<string, unknown
   window.gtag("event", eventName, params);
 }
 
-export function trackNorthWalesLeadSubmit(): void {
-  trackGA4Event("north_wales_lead_submit", {
-    territory: "north_wales_pa",
+export function trackConfirmedLead(territory: string): void {
+  // qualify_lead is already configured as a GA4 key event for this property.
+  trackGA4Event("qualify_lead", {
+    territory,
     lead_source: "google_ads",
+    lead_stage: "confirmed_form_submit",
   });
+
+  // Keep the legacy PA event so historical reports remain continuous.
+  if (territory === "north_wales_pa") {
+    trackGA4Event("north_wales_lead_submit", {
+      territory,
+      lead_source: "google_ads",
+    });
+  }
 }
