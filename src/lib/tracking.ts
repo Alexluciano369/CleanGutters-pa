@@ -58,3 +58,7 @@ export function trackConfirmedLead(territory: string): void {
     });
   }
 }
+
+export function trackNorthWalesLeadSubmit(): void {
+  trackConfirmedLead("north_wales_pa");
+}
