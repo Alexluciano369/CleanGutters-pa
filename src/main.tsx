@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
+import { GuardOffer } from './components/GuardOffer.tsx';
 import { ServiceLandingPage } from './pages/ServiceLandingPage.tsx';
 import './index.css';
 
@@ -8,6 +9,7 @@ const path = window.location.pathname.replace(/\/+$/, '') || '/';
 const legalRoutes = new Set(['/privacy', '/terms']);
 const serviceRoutes = new Set([
   '/',
+  '/gutter-guards',
   '/gutter-services',
   '/gutter-cleaning',
   '/gutter-repair',
@@ -31,6 +33,15 @@ function NotFoundPage() {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {legalRoutes.has(path) ? <App /> : serviceRoutes.has(path) ? <ServiceLandingPage /> : <NotFoundPage />}
+    {legalRoutes.has(path) ? (
+      <App />
+    ) : serviceRoutes.has(path) ? (
+      <>
+        <ServiceLandingPage />
+        <GuardOffer />
+      </>
+    ) : (
+      <NotFoundPage />
+    )}
   </StrictMode>
 );
