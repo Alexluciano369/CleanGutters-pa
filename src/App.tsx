@@ -325,9 +325,9 @@ function Gallery() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <GalleryPhoto src="/images/cleangutters-completed-roofline-1024.webp" alt="Finished low-profile gutter guards installed along a residential roofline" caption="Gutter protection with a clean, low-profile finish — professionally installed." />
-          <GalleryPhoto src="/images/cleangutters-micro-mesh-closeup-640.webp" alt="Close-up of stainless-steel micro-mesh gutter protection" caption="Stainless-steel micro-mesh designed to help block leaves, pine needles, shingle grit and roof debris." />
+          <GalleryPhoto src="/images/gutter-guard-micro-mesh-installed.webp" alt="Close-up of stainless-steel micro-mesh gutter protection installed on a local home" caption="Real stainless-steel micro-mesh installation photographed on the job." />
           <GalleryPhoto src="/images/cleangutters-finished-gutter-installation-1024.webp" alt="Completed CleanGutters gutter guard installation viewed along the roof edge" caption="Actual CleanGutters installation photograph showing finished gutter protection." />
-          <GalleryPhoto src="/images/cleangutters-installation-detail.webp" alt="CleanGutters gutter guard installation on a residential roofline" caption="Professionally installed through your local CleanGutters representative." />
+          <GalleryPhoto src="/images/alex-owner-installing-gutter-guards.webp" alt="Alex personally installing gutter protection on a local home" caption="Alex personally handles every CleanGutters Lighting installation." />
         </div>
       </div>
     </section>
@@ -342,7 +342,7 @@ function Representative() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Your Local North Wales Contact
+            Meet Alex — Your Owner-Installer
           </h2>
           <p className="mt-4 text-lg text-slate-600">
             Your local CleanGutters representative handles questions,
@@ -356,14 +356,14 @@ function Representative() {
           <div>
             <div className="relative rounded-2xl overflow-hidden shadow-xl border border-slate-200 bg-slate-100 aspect-[4/5] flex items-center justify-center">
               <img
-                src="/images/1762607687527.jpg"
-                alt="Your local CleanGutters representative serving North Wales, PA"
+                src="/images/alex-owner-installing-gutter-guards.webp"
+                alt="Alex, owner of CleanGutters Lighting, personally installing gutter guards"
                 loading="lazy"
                 className="w-full h-full object-cover"
               />
             </div>
             <p className="mt-3 text-sm text-slate-500 text-center font-medium">
-              Your Local CleanGutters Representative
+              Alex · Owner & Installer
             </p>
           </div>
 
@@ -420,13 +420,13 @@ function WhyCleanGutters() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <img
-              src="/Screenshot_20250731_191244_Facebook.jpg"
-              alt="CleanGutters representative installing micro-mesh gutter guards"
+              src="/images/gutter-guard-micro-mesh-installed.webp"
+              alt="Stainless-steel micro-mesh gutter guards installed by CleanGutters Lighting"
               loading="lazy"
               className="w-full h-auto rounded-2xl shadow-2xl"
             />
             <p className="mt-3 text-sm text-slate-500">
-              A CleanGutters representative installing a stainless-steel micro-mesh gutter guard system.
+              Real CleanGutters Lighting micro-mesh installation on a local home.
             </p>
           </div>
 
