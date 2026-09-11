@@ -1,0 +1,51 @@
+name: Place field photos
+
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/place-field-photos.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  place:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add real owner and product photos to paid pages
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p=Path('src/App.tsx')
+          s=p.read_text()
+          s=s.replace('src="/images/1762607687527.jpg"\n                alt="Your local CleanGutters representative serving North Wales, PA"','src="/images/alex-owner-installing-gutter-guards.webp"\n                alt="Alex, owner of CleanGutters Lighting, personally installing gutter guards"',1)
+          s=s.replace('Your Local North Wales Contact','Meet Alex — Your Owner-Installer',1)
+          s=s.replace('Your Local CleanGutters Representative','Alex · Owner & Installer',1)
+          s=s.replace('src="/Screenshot_20250731_191244_Facebook.jpg"\n              alt="CleanGutters representative installing micro-mesh gutter guards"','src="/images/gutter-guard-micro-mesh-installed.webp"\n              alt="Stainless-steel micro-mesh gutter guards installed by CleanGutters Lighting"',1)
+          s=s.replace('A CleanGutters representative installing a stainless-steel micro-mesh gutter guard system.','Real CleanGutters Lighting micro-mesh installation on a local home.',1)
+          s=s.replace('<GalleryPhoto src="/images/cleangutters-micro-mesh-closeup-640.webp" alt="Close-up of stainless-steel micro-mesh gutter protection" caption="Stainless-steel micro-mesh designed to help block leaves, pine needles, shingle grit and roof debris." />','<GalleryPhoto src="/images/gutter-guard-micro-mesh-installed.webp" alt="Close-up of stainless-steel micro-mesh gutter protection installed on a local home" caption="Real stainless-steel micro-mesh installation photographed on the job." />',1)
+          s=s.replace('<GalleryPhoto src="/images/cleangutters-installation-detail.webp" alt="CleanGutters gutter guard installation on a residential roofline" caption="Professionally installed through your local CleanGutters representative." />','<GalleryPhoto src="/images/alex-owner-installing-gutter-guards.webp" alt="Alex personally installing gutter protection on a local home" caption="Alex personally handles every CleanGutters Lighting installation." />',1)
+          p.write_text(s)
+
+          p=Path('src/pages/ServiceLandingPage.tsx')
+          s=p.read_text()
+          s=s.replace('setMeta("robots", "index, follow");','setMeta("robots", "noindex, follow");')
+          marker='<div><p className="font-bold text-emerald-400">Owner-installed craftsmanship</p>'
+          replacement='<div><picture><source srcSet="/images/alex-owner-installing-gutter-guards.webp" type="image/webp" /><img src="/images/alex-owner-installing-gutter-guards.jpg" alt="Alex, owner of CleanGutters Lighting, personally working on a local roof" loading="lazy" className="mb-7 h-[420px] w-full rounded-2xl object-cover shadow-xl" /></picture><p className="font-bold text-emerald-400">Owner-installed craftsmanship</p>'
+          s=s.replace(marker,replacement,1)
+          s=s.replace('src="/images/cleangutters-micro-mesh-closeup-1024.webp" alt="Stainless-steel micro-mesh gutter guard installed by CleanGutters Lighting"','src="/images/gutter-guard-micro-mesh-installed.webp" alt="Real stainless-steel micro-mesh gutter guard installed by CleanGutters Lighting"',1)
+          p.write_text(s)
+
+          p=Path('index.html')
+          s=p.read_text().replace('<meta name="robots" content="index, follow" />','<meta name="robots" content="noindex, follow" />')
+          p.write_text(s)
+          PY
+      - name: Commit page updates
+        run: |
+          git config user.name "CleanGutters site updater"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/App.tsx src/pages/ServiceLandingPage.tsx index.html
+          git commit -m "Use real Alex installation photos on paid pages"
+          git push
