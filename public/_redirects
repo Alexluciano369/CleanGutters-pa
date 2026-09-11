@@ -1,12 +1,2 @@
-/privacy              /index.html   200
-/privacy/             /index.html   200
-/terms                /index.html   200
-/terms/               /index.html   200
-/gutter-services      /index.html   200
-/gutter-services/     /index.html   200
-/gutter-cleaning      /index.html   200
-/gutter-cleaning/     /index.html   200
-/gutter-repair        /index.html   200
-/gutter-repair/       /index.html   200
-/gutter-installation  /index.html   200
-/gutter-installation/ /index.html   200
+# Known pages are generated as static HTML during the production build.
+# Unknown addresses fall through to 404.html instead of rewriting to the homepage.
