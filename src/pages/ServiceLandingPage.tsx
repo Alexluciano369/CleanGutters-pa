@@ -237,6 +237,7 @@ export function ServiceLandingPage() {
       <TrustStrip />
       <ServiceNavigation />
       <Details page={page} />
+      <BeforeAfter />
       <Inspection pageKey={pageKey} />
       <ServiceArea />
       <Proof />
@@ -357,6 +358,10 @@ function ServiceNavigation() {
 
 function Details({ page }: { page: PageConfig }) {
   return <section className="py-16"><div className="mx-auto max-w-7xl px-4 sm:px-6"><div className="mx-auto max-w-3xl text-center"><p className="font-bold text-emerald-700">Inspect first. Recommend second.</p><h2 className="mt-2 text-3xl font-black sm:text-4xl">The Right Fix for the Whole Gutter System</h2></div><div className="mt-10 grid gap-6 md:grid-cols-3">{page.details.map((item) => <article key={item.title} className="rounded-2xl border border-slate-200 p-7 shadow-sm"><CheckCircle2 className="h-8 w-8 text-emerald-600" /><h3 className="mt-4 text-xl font-black">{item.title}</h3><p className="mt-3 leading-relaxed text-slate-600">{item.text}</p></article>)}</div></div></section>;
+}
+
+function BeforeAfter() {
+  return <section id="real-guard-before-after" className="bg-white py-16"><div className="mx-auto max-w-5xl px-4 sm:px-6"><div className="mx-auto max-w-3xl text-center"><p className="font-bold text-emerald-700">Real local installation</p><h2 className="mt-2 text-3xl font-black sm:text-4xl">Before &amp; After: Open Gutter to Micro-Mesh Protection</h2><p className="mt-4 text-slate-600">The same roofline before and after Alex installed stainless-steel micro-mesh protection.</p></div><div className="mx-auto mt-9 grid max-w-3xl gap-5 sm:grid-cols-2"><figure className="relative overflow-hidden rounded-2xl bg-slate-100 shadow-xl"><picture><source srcSet="/images/gutter-guard-before-real-job.webp" type="image/webp" /><img src="/images/gutter-guard-before-real-job.jpg" alt="Before gutter guard installation: open gutter on a local home" loading="lazy" width="768" height="1024" className="h-auto w-full" /></picture><figcaption className="absolute bottom-4 left-4 rounded-full bg-slate-950/90 px-4 py-2 font-black text-white">Before</figcaption></figure><figure className="relative overflow-hidden rounded-2xl bg-slate-100 shadow-xl"><picture><source srcSet="/images/gutter-guard-after-real-job.webp" type="image/webp" /><img src="/images/gutter-guard-after-real-job.jpg" alt="After gutter guard installation: stainless-steel micro-mesh fitted to the same roofline" loading="lazy" width="768" height="1024" className="h-auto w-full" /></picture><figcaption className="absolute bottom-4 left-4 rounded-full bg-emerald-600 px-4 py-2 font-black text-white">After</figcaption></figure></div><p className="mx-auto mt-5 max-w-2xl text-center text-sm leading-relaxed text-slate-500">Real CleanGutters Lighting work—owner-installed, not a stock photo.</p></div></section>;
 }
 
 function Inspection({ pageKey }: { pageKey: PageKey }) {
