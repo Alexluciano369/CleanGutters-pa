@@ -1,0 +1,36 @@
+name: Improve Eastern PA landing page
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update-page:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply approved landing page improvements
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('src/pages/ServiceLandingPage.tsx')
+          s = p.read_text()
+          replacements = {
+            'eyebrow: "Eastern Pennsylvania Gutter Guard Installation",': 'eyebrow: "North Wales + 13 Eastern Pennsylvania Counties",',
+            'h1: "Gutter Guards Built for Eastern Pennsylvania Homes",': 'h1: "Gutter Guards for North Wales & Eastern Pennsylvania Homes",',
+            '"Alex installs every job personally — no subcontractors. Get surgical stainless-steel micro-mesh protection, a lifetime transferable warranty and a clear, no-pressure estimate.",': '"From North Wales across 13 Eastern Pennsylvania counties, Alex installs every job personally—never subcontractors. Get surgical stainless-steel micro-mesh protection, a lifetime transferable warranty and a clear, no-pressure estimate.",',
+            '<img src="/images/cleangutters-completed-roofline.webp" alt="CleanGutters Lighting gutter work on a Pennsylvania home" className="absolute inset-0 h-full w-full object-cover opacity-25" />': '<img src="/images/cleangutters-completed-roofline.webp" alt="Real CleanGutters Lighting gutter guard installation on an Eastern Pennsylvania home" className="absolute inset-0 h-full w-full object-cover opacity-35" />',
+            '<p className="text-sm font-bold uppercase tracking-wide text-emerald-700">Free · No pressure · No obligation</p>': '<p className="text-sm font-bold uppercase tracking-wide text-emerald-700">North Wales + 13 PA counties · Real local work</p>'
+          }
+          for old, new in replacements.items():
+              if old not in s:
+                  raise SystemExit(f'Missing expected text: {old[:90]}')
+              s = s.replace(old, new, 1)
+          p.write_text(s)
+          PY
+      - name: Commit
+        run: |
+          git config user.name "Ryze"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/pages/ServiceLandingPage.tsx
+          git commit -m "Improve Eastern PA landing page relevance"
+          git push
