@@ -57,10 +57,10 @@ const pages: Record<PageKey, PageConfig> = {
     title: "Gutter Guard Installation Eastern PA | CleanGutters Lighting",
     description:
       "Owner-installed stainless-steel micro-mesh gutter guards across 13 Eastern Pennsylvania counties. Lifetime transferable warranty and free estimate.",
-    eyebrow: "Eastern Pennsylvania Gutter Guard Installation",
-    h1: "Gutter Guards Built for Eastern Pennsylvania Homes",
+    eyebrow: "North Wales + 13 Eastern Pennsylvania Counties",
+    h1: "Gutter Guards for North Wales & Eastern Pennsylvania Homes",
     intro:
-      "Alex installs every job personally — no subcontractors. Get surgical stainless-steel micro-mesh protection, a lifetime transferable warranty and a clear, no-pressure estimate.",
+      "From North Wales across 13 Eastern Pennsylvania counties, Alex installs every job personally—never subcontractors. Get surgical stainless-steel micro-mesh protection, a lifetime transferable warranty and a clear, no-pressure estimate.",
     service: "Gutter Guard Installation",
     cta: "Request My Gutter Guard Estimate",
     icon: ShieldCheck,
@@ -270,7 +270,7 @@ function Hero({ page }: { page: PageConfig }) {
   const Icon = page.icon;
   return (
     <section className="relative overflow-hidden bg-slate-950">
-      <img src="/images/cleangutters-completed-roofline.webp" alt="CleanGutters Lighting gutter work on a Pennsylvania home" className="absolute inset-0 h-full w-full object-cover opacity-25" />
+      <img src="/images/cleangutters-completed-roofline.webp" alt="Real CleanGutters Lighting gutter guard installation on an Eastern Pennsylvania home" className="absolute inset-0 h-full w-full object-cover opacity-35" />
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/95 to-emerald-950/70" />
       <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_420px] lg:py-20">
         <div>
@@ -330,7 +330,7 @@ function LeadForm({ page }: { page: PageConfig }) {
         <div className="py-10 text-center"><CheckCircle2 className="mx-auto h-14 w-14 text-emerald-600" /><h2 className="mt-4 text-2xl font-black">Your request is in.</h2><p className="mt-2 text-slate-600">Alex will call you about your Pennsylvania gutter project.</p></div>
       ) : (
         <form onSubmit={submit}>
-          <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">Free · No pressure · No obligation</p>
+          <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">North Wales + 13 PA counties · Real local work</p>
           <h2 className="mt-1 text-2xl font-black">Get Your Gutter Estimate</h2>
           <p className="mt-2 text-sm text-slate-600">Tell us how to reach you. Alex responds personally.</p>
           <label className="mt-5 block text-sm font-bold">Name</label>
