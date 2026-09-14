@@ -146,7 +146,7 @@ function Hero() {
           <source media="(max-width: 1024px)" srcSet="/images/cleangutters-completed-roofline-1024.webp" />
           <img
             src="/images/cleangutters-completed-roofline.webp"
-            alt="Completed stainless-steel micro-mesh gutter guard installation along a residential roofline"
+            alt="Real CleanGutters Lighting gutter guard installation on an Eastern Pennsylvania home."
             width={1600}
             height={1200}
             fetchPriority="high"
@@ -160,17 +160,18 @@ function Hero() {
         <div className="flex flex-col">
           <div className="inline-flex items-center gap-2 bg-emerald-500/20 border border-emerald-400/30 text-emerald-100 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-6 backdrop-blur-sm self-start">
             <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            Local North Wales Support · Professionally Installed
+            North Wales + 13 Eastern Pennsylvania Counties
           </div>
 
           <h1 className="text-[26px] sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight tracking-tight">
-            Gutter Guard Installation Near North Wales, PA
+            Gutter Guards for North Wales &amp; Eastern Pennsylvania Homes
           </h1>
 
           <p className="mt-2 sm:mt-6 text-sm sm:text-lg text-slate-200 leading-relaxed max-w-xl">
-            Get a free, no-pressure estimate for professionally installed
-            stainless-steel micro-mesh gutter guards within 50 miles of North
-            Wales.
+            From North Wales across 13 Eastern Pennsylvania counties, Alex
+            installs every job personally—never subcontractors. Get surgical
+            stainless-steel micro-mesh protection, a lifetime transferable
+            warranty and a clear, no-pressure estimate.
           </p>
 
           <div className="hidden lg:flex mt-8 flex-col sm:flex-row gap-4">
@@ -193,6 +194,9 @@ function Hero() {
           </div>
 
           <div className="mt-3 sm:mt-6 lg:mt-0">
+            <p className="text-center text-emerald-100 text-xs sm:text-sm font-semibold mb-3">
+              North Wales + 13 PA counties · Real local work
+            </p>
             <LeadForm />
           </div>
       </div>
