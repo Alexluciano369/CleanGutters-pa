@@ -2,8 +2,8 @@ import { ReactNode } from "react";
 import { Phone, Mail, MapPin, ArrowLeft } from "lucide-react";
 import { trackTelephoneClick } from "@/lib/tracking";
 
-const BUSINESS_PHONE = "(856) 874-6640";
-const BUSINESS_PHONE_TEL = "+18568746640";
+const BUSINESS_PHONE = "(215) 469-1244";
+const BUSINESS_PHONE_TEL = "+12154691244";
 const BUSINESS_EMAIL = "cleangutters2008@gmail.com";
 
 export function LegalPageLayout({

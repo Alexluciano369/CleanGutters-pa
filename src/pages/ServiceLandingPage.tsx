@@ -18,8 +18,8 @@ import {
   trackTelephoneClick,
 } from "@/lib/tracking";
 
-const PHONE = "(856) 874-6640";
-const PHONE_TEL = "+18568746640";
+const PHONE = "(215) 469-1244";
+const PHONE_TEL = "+12154691244";
 const REVIEWS_URL = "https://g.page/r/CQgr69prO1cLEAE";
 const COUNTIES = [
   "Berks",

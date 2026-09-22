@@ -28,8 +28,8 @@ import { useRoute } from "@/lib/router";
 import { PrivacyPage } from "@/pages/PrivacyPage";
 import { TermsPage } from "@/pages/TermsPage";
 
-const BUSINESS_PHONE = "(856) 874-6640";
-const BUSINESS_PHONE_TEL = "+18568746640";
+const BUSINESS_PHONE = "(215) 469-1244";
+const BUSINESS_PHONE_TEL = "+12154691244";
 const BUSINESS_EMAIL = "cleangutters2008@gmail.com";
 const GOOGLE_REVIEWS_URL = "https://g.page/r/CQgr69prO1cLEAE";
 
