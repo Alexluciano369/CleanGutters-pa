@@ -1,0 +1,42 @@
+name: Use PA phone number
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace public phone number
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          replacements = {
+            '(856) 874-6640': '(215) 469-1244',
+            '856-874-6640': '215-469-1244',
+            '+1-856-874-6640': '+1-215-469-1244',
+            '+18568746640': '+12154691244',
+            '18568746640': '12154691244'
+          }
+          changed=[]
+          for p in Path('.').rglob('*'):
+            if not p.is_file() or '.git' in p.parts or p.suffix.lower() not in {'.html','.tsx','.ts','.js','.jsx','.json','.md','.txt'}:
+              continue
+            try: text=p.read_text()
+            except UnicodeDecodeError: continue
+            new=text
+            for old,val in replacements.items(): new=new.replace(old,val)
+            if new != text:
+              p.write_text(new)
+              changed.append(str(p))
+          if not changed:
+            raise SystemExit('No phone-number occurrences found')
+          print('\n'.join(changed))
+          PY
+      - name: Commit and publish
+        run: |
+          git config user.name "Ryze"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Use PA phone number on PA landing site"
+          git push
