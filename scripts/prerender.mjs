@@ -65,7 +65,7 @@ for (const route of routes) {
     .replace(/<meta property="og:title" content="[^"]*"\s*\/?>/, `<meta property="og:title" content="${escapeHtml(route.title)}" />`)
     .replace(/<meta property="og:description" content="[^"]*"\s*\/?>/, `<meta property="og:description" content="${escapeHtml(route.description)}" />`);
 
-  const fallback = `<main style="font-family:Arial,sans-serif;max-width:760px;margin:0 auto;padding:40px 20px;color:#0f172a;line-height:1.6"><p style="font-weight:700;color:#047857">CleanGutters Lighting · Serving Eastern Pennsylvania</p><h1>${escapeHtml(route.h1)}</h1><p>${escapeHtml(route.intro)}</p><p><strong>Request your free estimate:</strong> <a href="tel:+18568746640">Call (856) 874-6640</a>. No obligation and no spam.</p></main>`;
+  const fallback = `<main style="font-family:Arial,sans-serif;max-width:760px;margin:0 auto;padding:40px 20px;color:#0f172a;line-height:1.6"><p style="font-weight:700;color:#047857">CleanGutters Lighting · Serving Eastern Pennsylvania</p><h1>${escapeHtml(route.h1)}</h1><p>${escapeHtml(route.intro)}</p><p><strong>Request your free estimate:</strong> <a href="tel:+12154691244">Call (215) 469-1244</a>. No obligation and no spam.</p></main>`;
   html = html.replace(/<div id="root">[\s\S]*?<\/div>\s*<script type="module"/, `<div id="root">${fallback}</div>\n    <script type="module"`);
 
   if (route.service) {
@@ -78,7 +78,7 @@ for (const route of routes) {
       provider: {
         '@type': 'HomeAndConstructionBusiness',
         name: 'CleanGutters Lighting',
-        telephone: '+18568746640',
+        telephone: '+12154691244',
         url: 'https://cleangutters-pa.com/',
       },
       areaServed: counties.map((county) => ({ '@type': 'AdministrativeArea', name: `${county} County, Pennsylvania` })),
