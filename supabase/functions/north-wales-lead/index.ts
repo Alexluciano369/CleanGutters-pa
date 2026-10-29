@@ -8,183 +8,229 @@ const corsHeaders = {
     "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
+const NOTIFY_EMAIL = "cleangutters2008@gmail.com";
+const FROM_ADDRESS = "CleanGutters Leads <onboarding@resend.dev>";
+const EMAIL_TIMEOUT_MS = 15000;
+const MAX_FIELD_LENGTH = 2000;
+const REQUIRED_FIELDS = [
+  "submission_id",
+  "territory",
+  "lead_source",
+  "landing_page",
+  "name",
+  "phone",
+  "page_url",
+] as const;
+const OPTIONAL_TRACKING_FIELDS = [
+  "gclid",
+  "gbraid",
+  "wbraid",
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_term",
+  "utm_content",
+] as const;
+
+type Body = Record<string, unknown>;
+
+function json(payload: unknown, status: number): Response {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
+function text(body: Body, key: string): string | undefined {
+  const value = body[key];
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed.slice(0, MAX_FIELD_LENGTH) : undefined;
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function notificationHtml(lead: Record<string, string | undefined>): string {
+  const rows: [string, string | undefined][] = [
+    ["Name", lead.name],
+    ["Phone", lead.phone],
+    ["Service", lead.service_needed],
+    ["Territory", lead.territory],
+    ["Lead Source", lead.lead_source],
+    ["Landing Page", lead.landing_page],
+    ["Page URL", lead.page_url],
+    ["Submitted At", lead.submitted_at],
+    ["GCLID", lead.gclid],
+    ["GBRAID", lead.gbraid],
+    ["WBRAID", lead.wbraid],
+    ["UTM Source", lead.utm_source],
+    ["UTM Medium", lead.utm_medium],
+    ["UTM Campaign", lead.utm_campaign],
+    ["UTM Term", lead.utm_term],
+    ["UTM Content", lead.utm_content],
+  ];
+  const tableRows = rows
+    .map(
+      ([label, value]) =>
+        `<tr><td style="padding:4px 16px 4px 0;font-weight:bold;">${label}</td><td>${escapeHtml(value || "N/A")}</td></tr>`,
+    )
+    .join("\n");
+  return `<h2>New Lead — Pennsylvania Estimate Form</h2>
+<table style="border-collapse:collapse;font-family:sans-serif;font-size:14px;">
+${tableRows}
+</table>`;
+}
+
+async function sendNotification(
+  submissionId: string,
+  lead: Record<string, string | undefined>,
+): Promise<{ ok: boolean; emailId?: string }> {
+  const apiKey = Deno.env.get("RESEND_API_KEY");
+  if (!apiKey) {
+    console.error("RESEND_API_KEY is not configured");
+    return { ok: false };
+  }
+
+  try {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+        "Idempotency-Key": `lead-${submissionId}`,
+      },
+      body: JSON.stringify({
+        from: FROM_ADDRESS,
+        to: [NOTIFY_EMAIL],
+        subject: `New Lead: ${lead.name} — Pennsylvania`,
+        html: notificationHtml(lead),
+      }),
+      signal: AbortSignal.timeout(EMAIL_TIMEOUT_MS),
+    });
+
+    const responseBody = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      console.error(`Resend rejected notification (${response.status}):`, JSON.stringify(responseBody));
+      return { ok: false };
+    }
+    return { ok: true, emailId: typeof responseBody.id === "string" ? responseBody.id : undefined };
+  } catch (err) {
+    console.error("Resend request failed:", err instanceof Error ? err.message : err);
+    return { ok: false };
+  }
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 200, headers: corsHeaders });
   }
 
   if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), {
-      status: 405,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return json({ success: false, error: "Method not allowed" }, 405);
   }
 
+  let body: Body;
   try {
-    const body = await req.json();
+    body = await req.json();
+  } catch {
+    return json({ success: false, error: "Invalid request body" }, 400);
+  }
 
-    const required = [
-      "territory",
-      "lead_source",
-      "landing_page",
-      "name",
-      "phone",
-      "page_url",
-    ];
-    for (const field of required) {
-      if (!body[field] || typeof body[field] !== "string") {
-        return new Response(
-          JSON.stringify({ error: `Missing or invalid field: ${field}` }),
-          {
-            status: 400,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          }
-        );
+  for (const field of REQUIRED_FIELDS) {
+    if (!text(body, field)) {
+      return json({ success: false, error: `Missing or invalid field: ${field}` }, 400);
+    }
+  }
+
+  const phone = text(body, "phone")!;
+  if (phone.replace(/\D/g, "").length < 7) {
+    return json({ success: false, error: "Invalid field: phone" }, 400);
+  }
+
+  const submittedAt = new Date().toISOString();
+  const lead: Record<string, string | undefined> = {
+    name: text(body, "name"),
+    phone,
+    service_needed: text(body, "service_needed"),
+    territory: text(body, "territory"),
+    lead_source: text(body, "lead_source"),
+    landing_page: text(body, "landing_page"),
+    page_url: text(body, "page_url"),
+    submitted_at: submittedAt,
+  };
+  for (const field of OPTIONAL_TRACKING_FIELDS) {
+    lead[field] = text(body, field);
+  }
+
+  const submissionId = text(body, "submission_id")!;
+
+  try {
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+
+    const existing = await supabase
+      .from("leads")
+      .select("id, email_status")
+      .eq("submission_id", submissionId)
+      .maybeSingle();
+    if (existing.error) throw existing.error;
+
+    let stored = existing.data;
+    if (!stored) {
+      const inserted = await supabase
+        .from("leads")
+        .insert({ ...lead, submission_id: submissionId, email_status: "pending" })
+        .select("id, email_status")
+        .single();
+      if (inserted.error?.code === "23505") {
+        const raced = await supabase
+          .from("leads")
+          .select("id, email_status")
+          .eq("submission_id", submissionId)
+          .single();
+        if (raced.error) throw raced.error;
+        stored = raced.data;
+      } else if (inserted.error) {
+        throw inserted.error;
+      } else {
+        stored = inserted.data;
       }
     }
 
-    const submittedAt = new Date().toISOString();
+    if (stored.email_status === "sent") {
+      return json({ success: true, id: stored.id, duplicate: true }, 200);
+    }
 
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    const notification = await sendNotification(submissionId, lead);
 
-    const { data, error: dbError } = await supabase
+    const updated = await supabase
       .from("leads")
-      .insert({
-        territory: body.territory,
-        lead_source: body.lead_source,
-        landing_page: body.landing_page,
-        name: body.name.trim(),
-        email: body.email?.trim() || null,
-        phone: body.phone.trim(),
-        zip_code: body.zip_code?.trim() || null,
-        service_needed: body.service_needed?.trim() || null,
-        address: body.address?.trim() || null,
-        message: body.message?.trim() || null,
-        sms_consent: body.sms_consent === true ? true : false,
-        gclid: body.gclid || null,
-        gbraid: body.gbraid || null,
-        wbraid: body.wbraid || null,
-        utm_source: body.utm_source || null,
-        utm_medium: body.utm_medium || null,
-        utm_campaign: body.utm_campaign || null,
-        utm_term: body.utm_term || null,
-        utm_content: body.utm_content || null,
-        page_url: body.page_url,
-        submitted_at: submittedAt,
+      .update({
+        email_status: notification.ok ? "sent" : "failed",
+        email_id: notification.emailId ?? null,
       })
-      .select("id")
-      .single();
+      .eq("id", stored.id);
+    if (updated.error) console.error("Could not record email status:", updated.error.message);
 
-    if (dbError) {
-      console.error("Database insert error:", dbError);
-      return new Response(
-        JSON.stringify({ error: "Failed to save lead" }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
+    if (!notification.ok) {
+      return json(
+        { success: false, stage: "email", error: "Notification email was not accepted" },
+        502,
       );
     }
 
-    const leadEmail = "alexluciano369@gmail.com";
-    let emailStatus: string = "not_attempted";
-
-    if (leadEmail) {
-      const rows = [
-        ["Name", body.name],
-        ["Phone", body.phone],
-        ["ZIP Code", body.zip_code || "Not provided"],
-        ["Service Needed", body.service_needed || "Not provided"],
-        ["Email", body.email || "Not provided"],
-        ["Address", body.address || "Not provided"],
-        ["Message", body.message || "Not provided"],
-        ["SMS Consent", body.sms_consent === true ? "Yes" : "No"],
-        ["", ""],
-        ["Territory", body.territory],
-        ["Lead Source", body.lead_source],
-        ["Landing Page", body.landing_page],
-        ["Page URL", body.page_url],
-        ["Submitted At", submittedAt],
-        ["", ""],
-        ["GCLID", body.gclid || "N/A"],
-        ["GBRAID", body.gbraid || "N/A"],
-        ["WBRAID", body.wbraid || "N/A"],
-        ["UTM Source", body.utm_source || "N/A"],
-        ["UTM Medium", body.utm_medium || "N/A"],
-        ["UTM Campaign", body.utm_campaign || "N/A"],
-        ["UTM Term", body.utm_term || "N/A"],
-        ["UTM Content", body.utm_content || "N/A"],
-      ];
-
-      const emailHtml = `<h2>New Lead — North Wales, PA Landing Page</h2>
-<table style="border-collapse:collapse;font-family:sans-serif;font-size:14px;">
-${rows
-  .map(
-    ([label, value]) =>
-      `<tr><td style="padding:4px 16px 4px 0;font-weight:bold;">${label}</td><td>${value}</td></tr>`
-  )
-  .join("\n")}
-</table>`;
-
-      try {
-        const resendKey = Deno.env.get("RESEND_API_KEY");
-        if (resendKey) {
-          const emailRes = await fetch("https://api.resend.com/emails", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${resendKey}`,
-            },
-            body: JSON.stringify({
-              from: "CleanGutters Leads <onboarding@resend.dev>",
-              to: [leadEmail],
-              replyTo: "cleangutters2008@gmail.com",
-              subject: `New Lead: ${body.name} — North Wales, PA`,
-              html: emailHtml,
-            }),
-          });
-
-          const emailResBody = await emailRes.text().catch(() => "unknown");
-          if (!emailRes.ok) {
-            console.error(
-              `Resend email failed (${emailRes.status}): ${emailResBody}`
-            );
-            emailStatus = `failed (${emailRes.status}): ${emailResBody}`;
-          } else {
-            emailStatus = "sent";
-          }
-        } else {
-          emailStatus = "no_resend_key";
-          console.log(
-            `Lead ${data.id} saved. RESEND_API_KEY not configured — email not sent to ${leadEmail}.`
-          );
-        }
-      } catch (emailErr) {
-        emailStatus = `exception: ${emailErr.message}`;
-        console.error("Email notification error:", emailErr.message);
-      }
-    } else {
-      emailStatus = "not_attempted";
-    }
-
-    return new Response(
-      JSON.stringify({ success: true, id: data.id }),
-      {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
-    );
+    return json({ success: true, id: stored.id, email_accepted: true }, 200);
   } catch (err) {
-    console.error("Unhandled error:", err);
-    return new Response(
-      JSON.stringify({ error: "An unexpected error occurred" }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
-    );
+    console.error("Lead submission failed:", err instanceof Error ? err.message : err);
+    return json({ success: false, error: "Could not save the request" }, 500);
   }
 });

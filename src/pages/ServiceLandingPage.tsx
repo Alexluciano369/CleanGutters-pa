@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   ArrowRight,
   CheckCircle2,
@@ -12,6 +12,7 @@ import {
   Star,
   Wrench,
 } from "lucide-react";
+import { createSubmissionId, LEAD_ERROR_MESSAGE, submitLead } from "@/lib/leads";
 import {
   trackConfirmedLead,
   trackGoogleAdsLeadConversion,
@@ -292,36 +293,36 @@ function LeadForm({ page }: { page: PageConfig }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
-
-  const tracking = useMemo(() => Object.fromEntries(new URLSearchParams(window.location.search)), []);
+  const submissionIdRef = useRef(createSubmissionId());
+  const inFlightRef = useRef(false);
 
   async function submit(e: FormEvent) {
     e.preventDefault();
+    if (inFlightRef.current) return;
+    inFlightRef.current = true;
     setStatus("sending");
-    try {
-      const response = await fetch("https://formsubmit.co/ajax/cleangutters2008@gmail.com", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          _subject: `New Eastern PA Lead — ${page.service}`,
-          name,
-          phone,
-          service: page.service,
-          territory: "Eastern Pennsylvania",
-          page_url: window.location.href,
-          ...tracking,
-        }),
-      });
-      if (!response.ok) throw new Error("Lead delivery failed");
-      trackGoogleAdsLeadConversion();
-      trackConfirmedLead("eastern_pa");
-      window.gtag?.("event", "generate_lead", { service: page.service, territory: "eastern_pa" });
-      setStatus("success");
-      setName("");
-      setPhone("");
-    } catch {
+    const accepted = await submitLead(
+      {
+        name,
+        phone,
+        service_needed: page.service,
+        territory: "eastern_pa",
+        landing_page: window.location.pathname,
+      },
+      submissionIdRef.current,
+    );
+    inFlightRef.current = false;
+    if (!accepted) {
       setStatus("error");
+      return;
     }
+    trackGoogleAdsLeadConversion();
+    trackConfirmedLead("eastern_pa");
+    window.gtag?.("event", "generate_lead", { service: page.service, territory: "eastern_pa" });
+    submissionIdRef.current = createSubmissionId();
+    setStatus("success");
+    setName("");
+    setPhone("");
   }
 
   return (
@@ -337,7 +338,7 @@ function LeadForm({ page }: { page: PageConfig }) {
           <input required autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-4 py-3" />
           <label className="mt-4 block text-sm font-bold">Phone</label>
           <input required type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-4 py-3" />
-          {status === "error" && <p className="mt-3 text-sm font-semibold text-red-700">We could not send the request. Please call {PHONE}.</p>}
+          {status === "error" && <p role="alert" className="mt-3 text-sm font-semibold text-red-700">{LEAD_ERROR_MESSAGE}</p>}
           <button disabled={status === "sending"} className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-4 text-lg font-black text-white disabled:opacity-60">{status === "sending" ? <><Loader2 className="h-5 w-5 animate-spin" />Sending…</> : <>{page.cta}<ArrowRight className="h-5 w-5" /></>}</button>
           <p className="mt-3 text-center text-xs leading-relaxed text-slate-500">By submitting, you agree that CleanGutters Lighting may contact you one-to-one about this request. No spam · No obligation.</p>
         </form>

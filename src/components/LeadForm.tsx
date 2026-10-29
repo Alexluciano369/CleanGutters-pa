@@ -1,6 +1,6 @@
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { Loader2, CheckCircle2, AlertCircle, ShieldCheck } from "lucide-react";
-import { submitLead, type LeadFormData } from "@/lib/leads";
+import { createSubmissionId, LEAD_ERROR_MESSAGE, submitLead } from "@/lib/leads";
 import {
   trackGoogleAdsLeadConversion,
   trackNorthWalesLeadSubmit,
@@ -11,19 +11,13 @@ type Status = "idle" | "submitting" | "success" | "error";
 const SUCCESS_MESSAGE =
   "Request received! Alex usually responds within two business hours about your Pennsylvania estimate.";
 
-const DEFAULT_SERVICE = "Gutter Guard Installation";
+const SERVICE_NEEDED = "Gutter Guard Installation";
 
 export function LeadForm() {
   const [status, setStatus] = useState<Status>("idle");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [formData, setFormData] = useState<LeadFormData>({
-    name: "",
-    phone: "",
-    zip_code: "",
-    service_needed: DEFAULT_SERVICE,
-    message: "",
-    sms_consent: false,
-  });
+  const [formData, setFormData] = useState({ name: "", phone: "" });
+  const submissionIdRef = useRef(createSubmissionId());
+  const inFlightRef = useRef(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -32,32 +26,31 @@ export function LeadForm() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (inFlightRef.current) return;
+    inFlightRef.current = true;
     setStatus("submitting");
-    setErrorMessage("");
 
-    const result = await submitLead({
-      ...formData,
-      service_needed: DEFAULT_SERVICE,
-    });
+    const accepted = await submitLead(
+      {
+        ...formData,
+        service_needed: SERVICE_NEEDED,
+        territory: "north_wales_pa",
+        landing_page: window.location.pathname,
+      },
+      submissionIdRef.current,
+    );
+    inFlightRef.current = false;
 
-    if (result.success) {
-      trackGoogleAdsLeadConversion();
-      trackNorthWalesLeadSubmit();
-      setStatus("success");
-      setFormData({
-        name: "",
-        phone: "",
-        zip_code: "",
-        service_needed: DEFAULT_SERVICE,
-        message: "",
-        sms_consent: false,
-      });
-    } else {
+    if (!accepted) {
       setStatus("error");
-      setErrorMessage(
-        result.error || "Something went wrong. Please try again or call us directly."
-      );
+      return;
     }
+
+    trackGoogleAdsLeadConversion();
+    trackNorthWalesLeadSubmit();
+    submissionIdRef.current = createSubmissionId();
+    setStatus("success");
+    setFormData({ name: "", phone: "" });
   }
 
   if (status === "success") {
@@ -101,8 +94,6 @@ export function LeadForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
-        <input type="hidden" name="service_needed" value={DEFAULT_SERVICE} />
-
         <div>
           <label htmlFor="name" className="block text-sm font-semibold text-slate-700 mb-1.5">
             Name <span className="text-red-500">*</span>
@@ -139,9 +130,9 @@ export function LeadForm() {
         </div>
 
         {status === "error" && (
-          <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div role="alert" className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
             <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-red-700">{errorMessage}</p>
+            <p className="text-sm text-red-700">{LEAD_ERROR_MESSAGE}</p>
           </div>
         )}
 

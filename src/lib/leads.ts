@@ -1,17 +1,17 @@
-import { supabase } from "@/lib/supabase";
+export const LEAD_ERROR_MESSAGE =
+  "We could not confirm your request. Please try again or call (215) 469-1244.";
 
-export interface LeadFormData {
+const SUBMIT_TIMEOUT_MS = 20000;
+
+export interface LeadInput {
   name: string;
   phone: string;
-  zip_code: string;
   service_needed: string;
-  message?: string;
-  sms_consent?: boolean;
-  email?: string;
-  address?: string;
+  territory: string;
+  landing_page: string;
 }
 
-export interface TrackingData {
+interface TrackingData {
   gclid?: string;
   gbraid?: string;
   wbraid?: string;
@@ -22,31 +22,24 @@ export interface TrackingData {
   utm_content?: string;
 }
 
-export interface LeadSubmission extends LeadFormData, TrackingData {
-  territory: string;
-  lead_source: string;
-  landing_page: string;
-  page_url: string;
+export function createSubmissionId(): string {
+  return crypto.randomUUID();
 }
 
-export async function submitLead(
-  formData: LeadFormData
-): Promise<{ success: boolean; error?: string }> {
-  const tracking = collectTrackingParams();
-  const pageUrl = window.location.href;
-
-  const payload: LeadSubmission = {
-    ...formData,
-    ...tracking,
-    territory: "north_wales_pa",
+export async function submitLead(input: LeadInput, submissionId: string): Promise<boolean> {
+  const payload = {
+    ...input,
+    ...collectTrackingParams(),
+    submission_id: submissionId,
     lead_source: "google_ads",
-    landing_page: "north_wales_pa",
-    page_url: pageUrl,
+    page_url: window.location.href,
   };
 
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), SUBMIT_TIMEOUT_MS);
+
   try {
-    const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/north-wales-lead`;
-    const response = await fetch(apiUrl, {
+    const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/north-wales-lead`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -54,30 +47,16 @@ export async function submitLead(
         apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
       },
       body: JSON.stringify(payload),
+      signal: controller.signal,
     });
 
-    if (!response.ok) {
-      const errorBody = await response.json().catch(() => ({}));
-      return {
-        success: false,
-        error: errorBody.error || `Request failed (${response.status})`,
-      };
-    }
-
-    const data = await response.json();
-    if (!data || data.success !== true) {
-      return {
-        success: false,
-        error: data?.error || "Unexpected response from server",
-      };
-    }
-
-    return { success: true };
-  } catch (err) {
-    return {
-      success: false,
-      error: err instanceof Error ? err.message : "Network error occurred",
-    };
+    if (!response.ok) return false;
+    const data: unknown = await response.json();
+    return typeof data === "object" && data !== null && (data as { success?: unknown }).success === true;
+  } catch {
+    return false;
+  } finally {
+    window.clearTimeout(timeout);
   }
 }
 
@@ -109,5 +88,3 @@ function collectTrackingParams(): TrackingData {
 
   return tracking;
 }
-
-export { supabase };
