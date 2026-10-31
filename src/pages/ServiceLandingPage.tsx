@@ -58,10 +58,10 @@ const pages: Record<PageKey, PageConfig> = {
     title: "Gutter Guard Installation Eastern PA | CleanGutters Lighting",
     description:
       "Owner-installed stainless-steel micro-mesh gutter guards across 13 Eastern Pennsylvania counties. Lifetime transferable warranty and free estimate.",
-    eyebrow: "North Wales + 13 Eastern Pennsylvania Counties",
-    h1: "Gutter Guards for North Wales & Eastern Pennsylvania Homes",
+    eyebrow: "Serving Eastern Pennsylvania Homeowners",
+    h1: "Gutter Guards for Eastern Pennsylvania Homes",
     intro:
-      "From North Wales across 13 Eastern Pennsylvania counties, Alex installs every job personally—never subcontractors. Get surgical stainless-steel micro-mesh protection, a lifetime transferable warranty and a clear, no-pressure estimate.",
+      "Alex installs every job personally—never subcontractors. Get surgical stainless-steel micro-mesh gutter protection, a lifetime transferable warranty and a clear, no-pressure estimate.",
     service: "Gutter Guard Installation",
     cta: "Request My Gutter Guard Estimate",
     icon: ShieldCheck,
@@ -103,7 +103,7 @@ const pages: Record<PageKey, PageConfig> = {
   cleaning: {
     title: "Gutter Cleaning Eastern PA | Free Gutter-System Inspection",
     description:
-      "Professional gutter cleaning and a full gutter-system inspection across Eastern Pennsylvania. No advertised gimmick price, no pressure and no obligation.",
+      "Professional gutter cleaning and a full gutter-system inspection across Eastern Pennsylvania. Clear estimates, no pressure and no obligation.",
     eyebrow: "Eastern Pennsylvania Gutter Cleaning",
     h1: "Clean Gutters — and Find Problems Before They Get Expensive",
     intro:
@@ -114,7 +114,7 @@ const pages: Record<PageKey, PageConfig> = {
     bullets: [
       "Gutters and downspouts cleared",
       "Visual inspection included",
-      "No advertised cleaning-price gimmick",
+      "Clear estimate before work starts",
       "Repair and guard options only when needed",
     ],
     details: [
@@ -331,13 +331,13 @@ function LeadForm({ page }: { page: PageConfig }) {
         <div className="py-10 text-center"><CheckCircle2 className="mx-auto h-14 w-14 text-emerald-600" /><h2 className="mt-4 text-2xl font-black">Your request is in.</h2><p className="mt-2 text-slate-600">Alex will call you about your Pennsylvania gutter project.</p></div>
       ) : (
         <form onSubmit={submit}>
-          <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">North Wales + 13 PA counties · Real local work</p>
+          <p className="text-sm font-bold uppercase tracking-wide text-emerald-700">Owner-installed · Free, no-pressure estimate</p>
           <h2 className="mt-1 text-2xl font-black">Get Your Gutter Estimate</h2>
           <p className="mt-2 text-sm text-slate-600">Tell us how to reach you. Alex responds personally.</p>
-          <label className="mt-5 block text-sm font-bold">Name</label>
-          <input required autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-4 py-3" />
-          <label className="mt-4 block text-sm font-bold">Phone</label>
-          <input required type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-4 py-3" />
+          <label htmlFor="estimate-name" className="mt-5 block text-sm font-bold">Name</label>
+          <input id="estimate-name" required autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-4 py-3" />
+          <label htmlFor="estimate-phone" className="mt-4 block text-sm font-bold">Phone</label>
+          <input id="estimate-phone" required type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-4 py-3" />
           {status === "error" && <p role="alert" className="mt-3 text-sm font-semibold text-red-700">{LEAD_ERROR_MESSAGE}</p>}
           <button disabled={status === "sending"} className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-4 text-lg font-black text-white disabled:opacity-60">{status === "sending" ? <><Loader2 className="h-5 w-5 animate-spin" />Sending…</> : <>{page.cta}<ArrowRight className="h-5 w-5" /></>}</button>
           <p className="mt-3 text-center text-xs leading-relaxed text-slate-500">By submitting, you agree that CleanGutters Lighting may contact you one-to-one about this request. No spam · No obligation.</p>
@@ -370,18 +370,18 @@ function Inspection({ pageKey }: { pageKey: PageKey }) {
 }
 
 function ServiceArea() {
-  return <section className="bg-slate-50 py-16"><div className="mx-auto max-w-7xl px-4 text-center sm:px-6"><div className="inline-flex items-center gap-2 font-bold text-emerald-700"><MapPin className="h-5 w-5" />13 Eastern Pennsylvania Counties</div><h2 className="mt-2 text-3xl font-black">Local Pages. Exact County Targeting. No 100-Mile Spillover.</h2><p className="mx-auto mt-4 max-w-3xl text-slate-600">We serve the approved Eastern PA area without sending ads into New York, Maryland or unserved western counties.</p><div className="mx-auto mt-8 flex max-w-5xl flex-wrap justify-center gap-2">{COUNTIES.map((county) => <span key={county} className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold">{county} County</span>)}</div></div></section>;
+  return <section className="bg-slate-50 py-16"><div className="mx-auto max-w-7xl px-4 text-center sm:px-6"><div className="inline-flex items-center gap-2 font-bold text-emerald-700"><MapPin className="h-5 w-5" />Serving Eastern Pennsylvania</div><h2 className="mt-2 text-3xl font-black">Local Gutter Services. Work Done by the Owner.</h2><p className="mx-auto mt-4 max-w-3xl text-slate-600">Gutter guards, cleaning, repairs and seamless gutter installation for Eastern Pennsylvania homeowners. Call Alex for a free, no-pressure estimate.</p><div className="mx-auto mt-8 flex max-w-5xl flex-wrap justify-center gap-2">{COUNTIES.map((county) => <span key={county} className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold">{county} County</span>)}</div></div></section>;
 }
 
 function Proof() {
-  return <section className="py-16"><div className="mx-auto grid max-w-6xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-2"><img src="/images/gutter-guard-micro-mesh-installed.webp" alt="Real stainless-steel micro-mesh gutter guard installed by CleanGutters Lighting" className="rounded-2xl shadow-xl" /><div><div className="flex gap-1 text-amber-500">{[1,2,3,4,5].map((n) => <Star key={n} className="h-6 w-6 fill-current" />)}</div><h2 className="mt-4 text-3xl font-black">Concrete Proof, Not Corporate Promises</h2><ul className="mt-6 space-y-4 text-slate-700"><li><strong>18 years</strong> of gutter experience</li><li><strong>1,000+ homes</strong> served across the region</li><li><strong>Owner-installed</strong> work instead of rotating subcontractors</li><li><strong>40–60% less</strong> than large national guard companies on comparable projects</li></ul><a href={REVIEWS_URL} target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-2 font-black text-emerald-700">Read Google reviews <ArrowRight className="h-4 w-4" /></a></div></div></section>;
+  return <section className="py-16"><div className="mx-auto grid max-w-6xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-2"><img src="/images/gutter-guard-micro-mesh-installed.webp" alt="Real stainless-steel micro-mesh gutter guard installed by CleanGutters Lighting" className="rounded-2xl shadow-xl" /><div><div className="flex gap-1 text-amber-500">{[1,2,3,4,5].map((n) => <Star key={n} className="h-6 w-6 fill-current" />)}</div><h2 className="mt-4 text-3xl font-black">Gutter Protection Installed by Alex Personally</h2><ul className="mt-6 space-y-4 text-slate-700"><li><strong>18 years</strong> of gutter experience</li><li><strong>1,000+ homes</strong> served across the region</li><li><strong>Owner-installed</strong> work instead of rotating subcontractors</li><li><strong>40–60% less</strong> than large national guard companies on comparable projects</li></ul><a href={REVIEWS_URL} target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-2 font-black text-emerald-700">Read Google reviews <ArrowRight className="h-4 w-4" /></a></div></div></section>;
 }
 
 function FAQ({ pageKey }: { pageKey: PageKey }) {
   const questions = [
     ["Which Pennsylvania areas do you serve?", `Berks, Bucks, Carbon, Chester, Delaware, Lancaster, Lehigh, Monroe, Montgomery, Northampton, Philadelphia, Pike and Schuylkill counties.`],
-    ["Do you advertise a cheap cleaning price?", "No. Every home and gutter system is different. We provide a clear estimate after understanding the work instead of using a low teaser price."],
-    ["Will you recommend gutter guards on every cleaning?", "No. We explain what we find. Guards make sense when repeat debris is the real problem; repairs or cleaning alone may be the right answer."],
+    ["How do I get an estimate?", "Call Alex or leave your name and phone number in the form. He will discuss your gutter problem and arrange a free estimate. You get a clear price before any work starts."],
+    ["Can gutter guards help prevent recurring clogs?", "Micro-mesh guards help keep leaves, pine needles and roof debris out. Alex checks your existing gutters and explains whether guards, repairs or another service makes sense for your home."],
     ["Who performs the work?", "Alex handles and installs the work personally rather than sending unknown subcontractors."],
     ["Is the estimate free?", "Yes. The estimate is free, with no spam, no obligation and no pressure."],
   ];
@@ -393,7 +393,7 @@ function FinalCTA({ page }: { page: PageConfig }) {
 }
 
 function Footer() {
-  return <footer className="bg-slate-950 py-10 text-slate-400"><div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 sm:px-6 md:flex-row md:items-center md:justify-between"><div><p className="font-black text-white">CleanGutters Lighting</p><p className="mt-1 text-sm">Eastern Pennsylvania gutter services · Cherry Hill, NJ headquarters</p></div><div className="flex gap-5 text-sm"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href={`tel:${PHONE_TEL}`} onClick={trackTelephoneClick}>{PHONE}</a></div></div></footer>;
+  return <footer className="bg-slate-950 py-10 text-slate-400"><div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 sm:px-6 md:flex-row md:items-center md:justify-between"><div><p className="font-black text-white">CleanGutters Lighting</p><p className="mt-1 text-sm">Gutter services for Eastern Pennsylvania homeowners</p></div><div className="flex gap-5 text-sm"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href={`tel:${PHONE_TEL}`} onClick={trackTelephoneClick}>{PHONE}</a></div></div></footer>;
 }
 
 function MobileBar() {
