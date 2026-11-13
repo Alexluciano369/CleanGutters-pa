@@ -24,7 +24,7 @@ export function GuardOffer() {
       </div>
       <div className="mt-3 flex items-start gap-2 text-sm text-slate-700">
         <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700" />
-        <p>New installations only. Book your free estimate by October 31, 2026. Discounts cannot be combined.</p>
+        <p>New installations only. Discounts cannot be combined.</p>
       </div>
     </section>,
     target

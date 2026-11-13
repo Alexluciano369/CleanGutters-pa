@@ -253,7 +253,7 @@ export function ServiceLandingPage() {
 function Header() {
   return (
     <>
-      <div className="bg-amber-300 px-4 py-3 text-center text-sm font-black text-amber-950 sm:text-base">SENIORS SAVE 10% — or take $250 off, whichever saves more. New installations only · Book by Oct. 31 · Cannot combine.</div>
+      <div className="bg-amber-300 px-4 py-3 text-center text-sm font-black text-amber-950 sm:text-base">SENIORS SAVE 10% — or take $250 off, whichever saves more. New installations only · Cannot combine.</div>
       <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <a href="/" className="font-extrabold tracking-tight text-xl">Clean<span className="text-emerald-600">Gutters</span> Lighting</a>

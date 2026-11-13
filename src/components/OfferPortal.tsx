@@ -26,7 +26,7 @@ export function OfferPortal() {
       <p className="text-xs font-black uppercase tracking-wider text-emerald-800">Fall installation offer</p>
       <p className="mt-1 text-2xl font-black">$250 Off Gutter Guards</p>
       <p className="mt-1 text-sm font-bold">Or 10% off for seniors and military—whichever saves more.</p>
-      <p className="mt-2 text-xs leading-relaxed text-slate-600">New installations only. Offers cannot be combined. Book by October 31, 2026.</p>
+      <p className="mt-2 text-xs leading-relaxed text-slate-600">New installations only. Offers cannot be combined.</p>
     </div>,
     mount,
   );

@@ -88,8 +88,7 @@ export function LeadForm() {
         </h3>
         <p className="text-emerald-50 text-xs sm:text-sm mt-2 leading-relaxed">
           Seniors and military get 10% off instead — whichever saves more. New
-          installations only. Discounts cannot be combined. Book your free
-          estimate by October 31, 2026.
+          installations only. Discounts cannot be combined.
         </p>
       </div>
 
